@@ -1,0 +1,368 @@
+@import "tailwindcss";
+
+@theme {
+  --color-shell: #f3f6f5;
+  --color-panel: #ffffff;
+  --color-panel2: #e8efec;
+  --color-panel3: #e5f2eb;
+  --color-line: #cbd8d2;
+  --color-line2: #7c9187;
+  --color-chalk: #172620;
+  --color-muted: #52635b;
+  --color-dim: #596b62;
+  --color-amber: #8a4b08;
+  --color-mint: #185d43;
+  --color-coral: #b42318;
+  --color-sky: #1d5f9e;
+  --color-clay: #a2442c;
+  --color-lime: #496725;
+
+  --color-action: #185d43;
+  --color-action-hover: #124832;
+  --color-on-action: #ffffff;
+  --color-focus: #1d5f9e;
+
+  --font-display: "Golos Text", "Segoe UI", sans-serif;
+  --font-sans: "Golos Text", "Segoe UI", sans-serif;
+
+  --radius-card: 14px;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --color-shell: #101918;
+  --color-panel: #172422;
+  --color-panel2: #20312d;
+  --color-panel3: #293f37;
+  --color-line: #40584e;
+  --color-line2: #789187;
+  --color-chalk: #edf5f1;
+  --color-muted: #a9bbb4;
+  --color-dim: #98ada4;
+  --color-amber: #f5c451;
+  --color-mint: #73d5aa;
+  --color-coral: #ff9d91;
+  --color-sky: #8ac7fa;
+  --color-clay: #f2ad98;
+  --color-lime: #bedc8f;
+  --color-action: #91d9b8;
+  --color-action-hover: #b0e9cf;
+  --color-on-action: #10241b;
+  --color-focus: #8ac7fa;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  body {
+    background-color: var(--color-shell);
+    color: var(--color-chalk);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-panel3);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line2) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-line2);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  input,
+  select,
+  textarea,
+  button {
+    font-family: inherit;
+  }
+  input[type="time"]::-webkit-calendar-picker-indicator,
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+  }
+}
+
+/* ---------- появление ---------- */
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.pop {
+  animation: popIn 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.slide-in {
+  animation: slideInRight 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.breathe {
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes sheen {
+  0% {
+    background-position: -220% 0;
+  }
+  100% {
+    background-position: 220% 0;
+  }
+}
+.sheen {
+  background-image: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.28) 45%,
+    transparent 70%
+  );
+  background-size: 220% 100%;
+  animation: sheen 1.5s linear infinite;
+}
+
+@keyframes spinSlow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  animation: spinSlow 1s linear infinite;
+}
+
+/* ---------- элементы ---------- */
+.hairline {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.card-hover,
+.nav-item,
+.lesson-chip {
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+.card-hover:hover,
+.lesson-chip:hover {
+  background-color: var(--color-shell);
+}
+.timetable-scroll {
+  max-height: 70vh;
+  overflow: auto;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+}
+.timetable-scroll thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--color-panel2);
+}
+.timetable-scroll .timetable-time {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--color-panel2);
+}
+.timetable-scroll thead .timetable-time {
+  z-index: 3;
+}
+.timetable-shift th {
+  background: var(--color-panel2);
+  text-align: left;
+  padding: 6px 12px;
+}
+.lesson-chip[data-selected="true"] {
+  background: var(--color-panel3);
+  outline: 1px solid var(--color-action);
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ---------- печать ---------- */
+.substitution-print-sheet {
+  display: none;
+}
+
+@media print {
+  .substitution-print-sheet {
+    display: block;
+    page: substitution-sheet;
+    font-size: 10pt;
+    line-height: 1.35;
+  }
+  .substitution-print-sheet header {
+    margin-bottom: 4mm;
+    break-after: avoid;
+  }
+  .substitution-print-sheet h1 {
+    font-size: 17pt;
+    font-weight: 700;
+  }
+  .substitution-print-sheet h2 {
+    font-size: 11pt;
+    font-weight: 700;
+    break-after: avoid;
+  }
+  .substitution-print-absences {
+    margin-bottom: 4mm;
+  }
+  .substitution-print-absences li {
+    break-inside: avoid;
+  }
+  .substitution-print-sheet table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+  .substitution-print-sheet th,
+  .substitution-print-sheet td {
+    padding: 1.5mm 2mm;
+    border: 1px solid #999;
+    vertical-align: top;
+  }
+  .substitution-print-sheet td:first-child,
+  .substitution-print-sheet td:last-child {
+    white-space: nowrap;
+  }
+  .substitution-print-class {
+    break-after: avoid;
+  }
+  @page substitution-sheet {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  body:has(main .print-area) :not(.print-area, .print-area *, :has(.print-area)) {
+    display: none !important;
+  }
+  body :has(.print-area) {
+    display: block !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .print-area {
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: #fff;
+    color: #000;
+  }
+  .timetable-scroll thead th,
+  .timetable-scroll .timetable-time {
+    position: static;
+  }
+  .print-area tr {
+    break-inside: avoid;
+  }
+  .print-area .timetable-shift {
+    break-after: avoid;
+  }
+  .timetable-week table {
+    min-width: 0;
+    border-spacing: 1mm;
+  }
+  .timetable-week [data-print-unused],
+  .timetable-week .timetable-placeholder {
+    display: none;
+  }
+  .timetable-week th,
+  .timetable-week td,
+  .timetable-week .lesson-chip {
+    padding: 1mm 1.5mm;
+  }
+  .print-area * {
+    color: #000 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-color: #999 !important;
+  }
+  .print-area th {
+    background-color: #eee !important;
+  }
+  .print-area .lesson-chip {
+    border: 1px solid #666 !important;
+    border-left-width: 3px !important;
+    break-inside: avoid;
+  }
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+}
