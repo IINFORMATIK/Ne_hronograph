@@ -1,30 +1,22 @@
-# Многоэтапная сборка: приложение работает и без внешней БД
-FROM node:20-alpine AS base
+FROM node:22-bookworm-slim AS build
 WORKDIR /app
-ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Зависимости
-FROM base AS deps
-COPY package.json package-lock.json* ./
-RUN npm install --no-audit --no-fund
+COPY package.json package-lock.json ./
+RUN npm ci --include=dev
+COPY next.config.ts next-env.d.ts tsconfig.json postcss.config.mjs ./
+COPY src ./src
+RUN npm run build && npm prune --omit=dev
 
-# Сборка
-FROM base AS build
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-RUN npm run build
+FROM node:22-bookworm-slim AS runner
+WORKDIR /app
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 JSON_DB_PATH=/app/data
 
-# Запуск
-FROM base AS runner
-ENV NODE_ENV=production
-RUN addgroup -S app && adduser -S app -G app
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/next.config.ts ./next.config.ts
-COPY --from=build /app/drizzle.config.json ./drizzle.config.json
-RUN mkdir -p /app/data && chown -R app:app /app/data
-USER app
+COPY --from=build --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/.next ./.next
+COPY --from=build /app/package.json ./
+RUN install -d -o node -g node /app/data
+
+USER node
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+CMD ["node", "node_modules/next/dist/bin/next", "start", "--hostname", "0.0.0.0", "--port", "3000"]
