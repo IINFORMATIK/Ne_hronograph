@@ -3,7 +3,7 @@ WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY package.json package-lock.json ./
-RUN npm ci --include=dev
+RUN --mount=type=cache,target=/root/.npm npm ci --include=dev --prefer-offline --fetch-retries=4 --no-audit --no-fund
 COPY next.config.ts next-env.d.ts tsconfig.json postcss.config.mjs ./
 COPY src ./src
 RUN npm run build && npm prune --omit=dev
